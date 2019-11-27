@@ -4,13 +4,23 @@ import io.vertx.core.AbstractVerticle;
 
 import java.util.logging.Logger;
 
-public class Verticle extends AbstractVerticle {
-    private Logger log = Logger.getLogger(Verticle.class.getSimpleName());
+public class AppVerticle extends AbstractVerticle {
+    private Logger log = Logger.getLogger(AppVerticle.class.getSimpleName());
+    public static final String ebApplication = AppVerticle.class.getPackageName();
 
     @Override
     public void start(){
-        vertx.setPeriodic(1000,periodicHnadler->{
-            log.info("App Verticle is alive");
+        String appId = config().getString("ID");
+        log.info(String.format("Deploy App Verticle %s", appId));
+
+        vertx.eventBus().consumer(String.format("%s.%s",ebApplication,appId),message->{
+            String receivedMessage = (String) message.body();
+            log.info(String.format("App Verticle Receive Message %s", receivedMessage));
+        });
+
+        vertx.setPeriodic(3000,periodicHnadler->{
+            log.info(String.format("App Verticle %s is alive", appId));
         });
     }
 }
+
