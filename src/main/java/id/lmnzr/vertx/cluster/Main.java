@@ -3,6 +3,7 @@ package id.lmnzr.vertx.cluster;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
@@ -22,7 +23,20 @@ public class Main {
 
         ClusterManager mgr = new ZookeeperClusterManager(zkConfig);
 
-        VertxOptions options = new VertxOptions().setClusterManager(mgr);
+        VertxOptions options = new VertxOptions()
+//                .setClustered(true)
+//                .setClusterHost(hostAddress)
+//                .setClusterPort(18001)
+                .setClusterManager(mgr)
+                //.setQuorumSize(2)
+                .setHAEnabled(true);
+
+        EventBusOptions ebOptions = new EventBusOptions()
+                .setClustered(true);
+//                .setHost(hostAddress);
+//                .setPort(18002);
+
+        options.setEventBusOptions(ebOptions);
 
         Vertx.clusteredVertx(options, handler->{
             if(handler.succeeded()){
