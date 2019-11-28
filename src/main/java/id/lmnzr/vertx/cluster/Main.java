@@ -42,7 +42,6 @@ public class Main {
                 .setProperty("tag-value", "EC2ContainerService-test-cluster");
         hazelcastConfig.getNetworkConfig().setJoin(joinConfig);
 
-
         ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);
         String hostAddress = getAddress();
 
